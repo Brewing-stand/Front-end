@@ -3,7 +3,7 @@ FROM node:18-alpine3.17 AS build
 WORKDIR /app
 COPY . .
 RUN npm install --verbose
-CMD ["run","npm","build"]
+RUN npm run build
 
 # Stage 2: Serve the application using nginx
 FROM nginx:alpine
