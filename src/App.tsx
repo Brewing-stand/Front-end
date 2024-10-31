@@ -1,13 +1,28 @@
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import RecipeService from "./services/RecipeService.ts";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+
+
+    const [recipes, setProjects] = useState([]);
+
+    useEffect(() => {
+        RecipeService.get(1)
+            .then(response => setProjects(response.data))
+            .then(response => console.log(response))
+            .catch(error => console.error(error));
+    }, []);
 
   return (
     <>
+
+        {recipes}
+
+
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
