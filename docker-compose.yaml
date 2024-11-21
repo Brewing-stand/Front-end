@@ -1,0 +1,14 @@
+services:
+  frontend:
+    image: ghcr.io/brewing-stand/front-end:master  # Use the pre-built image
+    ports:
+      - "80:80"  # Exposing port 80 for Nginx
+    networks:
+      - vite-network
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+networks:
+  vite-network:
+    driver: bridge

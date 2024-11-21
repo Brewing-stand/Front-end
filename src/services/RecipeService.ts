@@ -1,13 +1,13 @@
 import axios, {AxiosResponse} from 'axios';
 
-const url = `${import.meta.env.VITE_API_URL}/project`; // Replace with your API endpoint
+const url = `${import.meta.env.VITE_API_URL}/recipe`; // Replace with your API endpoint
 
 const projectService = {
-    getAll(): Promise<AxiosResponse<[]>> {
+    async getAll(): Promise<AxiosResponse<[]>> {
         return axios.get(url);
     },
 
-    get(id: number): Promise<AxiosResponse> {
+    async get(id: number): Promise<AxiosResponse> {
         return axios.get(`${url}/${id}`);
     }
 };
