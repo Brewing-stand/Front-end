@@ -1,21 +1,15 @@
 import './App.css'
-import LoginGit from "./services/Login-Git.ts";
+import Navbar from "./components/Navbar.tsx";
 
 function App() {
 
   return (
       <>
-          <h1>Brewing Stand</h1>
-
-          <button onClick={LoginGit.CallGit}>
-              login with github
-          </button>
-
-          <button onClick={LoginGit.Login}>
-              Get Access Token
-          </button>
-
-
+          <Navbar/>
+          <div style={{padding: '20px'}}>
+              <h1>Brewing Stand</h1>
+              <p>Content goes here...</p>
+          </div>
       </>
   )
 }
