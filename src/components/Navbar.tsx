@@ -2,14 +2,36 @@ import React, {useState} from 'react';
 import {Menu} from 'antd';
 import {LoginOutlined, GithubOutlined} from '@ant-design/icons';
 import type {MenuProps} from 'antd';
+import LoginGit from "../services/LoginGit.ts";
+import {useNavigate} from "react-router";
 
 const Navbar: React.FC = () => {
     const [current, setCurrent] = useState('home');
 
+    const navigate = useNavigate();
+
     const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
         setCurrent(e.key);
+
+        if (e.key === 'home') {
+            navigate("/")
+        }
+
+        if (e.key === 'projects') {
+            navigate("/Projects")
+        }
+
+        if (e.key === 'login-github') {
+            try {
+                // Call the Login method from the LoginGit service
+                console.log("hit");
+                LoginGit.redirectToGitHubLogin();
+            } catch (error) {
+                console.error('Error during GitHub login:', error);
+            }
+        }
     };
+
 
     return (
         <>
