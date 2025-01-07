@@ -1,57 +1,32 @@
-import axios, {AxiosResponse} from 'axios';
+// services/ProjectService.ts
 import {Project} from "../models/Project.ts";
+import axiosInstance from "./AxiosInstance.ts";
+import {AxiosResponse} from "axios";
 
 let url = `${import.meta.env.VITE_API_URL}/project`; // Replace with your API endpoint for projects
 
-url = "http://localhost:5281/api/Project";
+url = "http://localhost:5281/api/project"
 
 const projectService = {
-    // Get all projects
     async getAll(): Promise<AxiosResponse<[]>> {
-        return axios.get(url, {
-            withCredentials: true, // Ensures the cookie is sent with the request
-        });
+        return axiosInstance.get(url);
     },
 
-    // Get a specific project by ID
     async get(id: string): Promise<AxiosResponse> {
-        return axios.get(`${url}/${id}`, {
-            withCredentials: true, // Ensures the cookie is sent with the request
-        });
+        return axiosInstance.get(`${url}/${id}`);
     },
 
-    // Create a new project
     async create(project: Project): Promise<AxiosResponse> {
-        return axios.post(url, project, {
-            withCredentials: true, // Ensures the cookie is sent with the request
-        });
+        return axiosInstance.post(url, project);
     },
 
-    // Update an existing project by ID
     async update(id: string, project: Project): Promise<AxiosResponse> {
-        return axios.put(`${url}/${id}`, project, {
-            withCredentials: true, // Ensures the cookie is sent with the request
-        });
+        return axiosInstance.put(`${url}/${id}`, project);
     },
 
-    // Delete a project by ID
     async delete(id: string): Promise<AxiosResponse> {
-        return axios.delete(`${url}/${id}`, {
-            withCredentials: true, // Ensures the cookie is sent with the request
-        });
+        return axiosInstance.delete(`${url}/${id}`);
     }
 };
 
 export default projectService;
-
-/*
-EXAMPLE USAGE:
-
-const [projects, setProjects] = useState<[]>([]);
-
-useEffect(() => {
-  projectService.getAll()
-    .then(response => setProjects(response.data))
-    .catch(error => console.error(error));
-}, []);
- */
