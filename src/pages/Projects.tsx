@@ -74,16 +74,14 @@ const Projects: React.FC = () => {
 
     return (
         <div className="p-6">
-            {/* Add Project Button inside the page layout */}
-            <div className="flex justify-end mb-6">
                 <Button
                     type="primary"
                     shape="circle"
                     icon={<PlusOutlined/>}
                     size="large"
                     onClick={handleAddProject}
+                    className="m-9"
                 />
-            </div>
 
             {loading && <p className="text-gray-500">Loading projects...</p>}
             {error && <p className="text-red-500">{error}</p>}
