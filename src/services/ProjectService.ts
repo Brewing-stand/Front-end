@@ -1,4 +1,3 @@
-// services/ProjectService.ts
 import {Project} from "../models/Project.ts";
 import axiosInstance from "./AxiosInstance.ts";
 import {AxiosResponse} from "axios";
@@ -7,7 +6,7 @@ let url = `${import.meta.env.VITE_API_URL}/project`; // Replace with your API en
 
 url = "http://localhost:5281/api/project"
 
-const projectService = {
+const ProjectService = {
     async getAll(): Promise<AxiosResponse<[]>> {
         return axiosInstance.get(url);
     },
@@ -29,4 +28,4 @@ const projectService = {
     }
 };
 
-export default projectService;
+export default ProjectService;

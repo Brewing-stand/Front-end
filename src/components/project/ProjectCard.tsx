@@ -21,7 +21,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, onEdit, onDelete}) =>
                 <Button
                     type="text"
                     icon={<EditOutlined/>}
-                    onClick={() => onEdit(project.id)}
+                    onClick={() => onEdit(project.id!)}
                     key="edit"
                 >
                     Edit
@@ -29,7 +29,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({project, onEdit, onDelete}) =>
                 <Button
                     type="text"
                     icon={<DeleteOutlined/>}
-                    onClick={() => onDelete(project.id)}
+                    onClick={() => onDelete(project.id!)}
                     danger
                     key="delete"
                 >
