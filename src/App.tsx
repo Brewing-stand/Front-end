@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar.tsx";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import {Home} from "./pages/Home.tsx";
 import {AuthGit} from "./pages/AuthGit.tsx";
-import {Projects} from "./pages/Projects.tsx";
+import Projects from "./pages/Projects.tsx";
 
 function App() {
 

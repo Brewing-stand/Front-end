@@ -1,4 +1,3 @@
-import React, {useState} from 'react';
 import {Menu} from 'antd';
 import {LoginOutlined, GithubOutlined} from '@ant-design/icons';
 import type {MenuProps} from 'antd';
@@ -6,12 +5,9 @@ import LoginGit from "../services/LoginGit.ts";
 import {useNavigate} from "react-router";
 
 const Navbar: React.FC = () => {
-    const [current, setCurrent] = useState('home');
-
     const navigate = useNavigate();
 
     const onClick: MenuProps['onClick'] = (e) => {
-        setCurrent(e.key);
 
         if (e.key === 'home') {
             navigate("/")
@@ -38,7 +34,6 @@ const Navbar: React.FC = () => {
             {/* Navigation Menu */}
             <Menu
                 onClick={onClick}
-                selectedKeys={[current]}
                 mode="horizontal"
                 theme={'dark'}
             >
