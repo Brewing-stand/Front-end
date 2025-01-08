@@ -31,7 +31,7 @@ export function Settings() {
             }
         };
 
-        fetchUserData(); // Fetch user data when the component is mounted
+        fetchUserData().then() // Fetch user data when the component is mounted
 
         // Check for consent status on page load
         const consentCookie = document.cookie.indexOf("userHasConsented=true");
