@@ -1,12 +1,12 @@
 import {useEffect} from "react";
-import GitLogin from "../services/LoginGit.ts";
+import AuthGitService from "../../services/AuthGitService.ts";
 import {useNavigate} from "react-router-dom";
 
 export function AuthGit() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        (async () => await GitLogin.handleGitHubLogin() && navigate("/"))();
+        (async () => await AuthGitService.handleGitHubLogin() && navigate("/"))();
     }, [navigate]);
 
     return (
