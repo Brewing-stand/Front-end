@@ -2,18 +2,31 @@ import axiosInstance from "./AxiosInstance.ts";
 import {AxiosResponse} from "axios";
 import {User} from "../models/User.ts";
 import AuthService from "./AuthService.ts";
+import SessionAccountService from "./SessionAccountService.ts";
 
 let url = `${import.meta.env.VITE_API_URL}/user`; // Replace with your API endpoint for projects
 
 url = "http://localhost:5001/api/user"
 
-const ProjectService = {
+const UserService = {
     async get(): Promise<AxiosResponse> {
         return axiosInstance.get(url);
     },
 
     async update(user: User): Promise<AxiosResponse> {
-        return axiosInstance.put(url, user);
+        try {
+            const response = await axiosInstance.put(url, user); // Update user data on the server
+
+            if (response.status === 200) {
+                // After updating user data on the server, update the session data
+                await SessionAccountService.update(); // This will update sessionStorage with the latest user data
+            }
+
+            return response;
+        } catch (error) {
+            console.error("Error updating user data:", error);
+            throw error;
+        }
     },
 
     async delete(): Promise<AxiosResponse> {
@@ -27,4 +40,4 @@ const ProjectService = {
     }
 };
 
-export default ProjectService;
+export default UserService;

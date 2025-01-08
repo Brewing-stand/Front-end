@@ -2,20 +2,38 @@ import {Card, Typography, Button} from 'antd';
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {FireOutlined} from '@ant-design/icons';
+import SessionAccountService from '../services/SessionAccountService'; // Import the session service
 
 const {Title, Paragraph} = Typography;
 
 export function Home() {
-    const [username, setUsername] = useState<string | null>(null);
+    const [user, setUser] = useState<{ username: string | null; avatar: string | null } | null>(null);
     const navigate = useNavigate(); // Hook for navigation
 
     useEffect(() => {
-        // Retrieve 'user' object from localStorage and extract username
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            const parsedUser = JSON.parse(storedUser);
-            setUsername(parsedUser.username);
-        }
+        // Function to retrieve and set user data
+        const updateUserData = () => {
+            const storedUser = SessionAccountService.get();
+            if (storedUser) {
+                setUser(storedUser); // Set the entire user object
+            }
+        };
+
+        // Call the function initially
+        updateUserData();
+
+        // Watch for changes in sessionStorage and update user data accordingly
+        const storageListener = () => {
+            updateUserData();
+        };
+
+        // Listen for changes in sessionStorage (when session data is updated)
+        window.addEventListener('storage', storageListener);
+
+        // Cleanup listener on component unmount
+        return () => {
+            window.removeEventListener('storage', storageListener);
+        };
     }, []);
 
     const handleStartBrewing = () => {
@@ -37,9 +55,10 @@ export function Home() {
                     Welcome to Brewing Stand!
                 </Title>
 
-                {username ? (
+                {user ? (
                     <Paragraph className="text-center text-gray-600 mb-6">
-                        Hello, <span className="font-semibold">{username}</span>! We're glad to have you on board. Let's
+                        Hello, <span className="font-semibold">{user.username}</span>! We're glad to have you on board.
+                        Let's
                         start brewing some amazing recipes together!
                     </Paragraph>
                 ) : (

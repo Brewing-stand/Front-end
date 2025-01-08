@@ -5,21 +5,49 @@ import {useNavigate} from 'react-router';
 import React, {useState, useEffect} from 'react';
 import AuthService from "../services/AuthService.ts";
 import {User} from "../models/User.ts";
+import SessionAccountService from '../services/SessionAccountService'; // Import the session service
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    const [user, setUser] = useState<User | null>(null); // Typed user state
+    const [user, setUser] = useState<User | null>(null); // Store the entire user object
 
-    useEffect(() => {
-        // Check if the user is logged in by checking for a token or user data in localStorage
-        const storedUser = localStorage.getItem('user'); // Replace 'user' with your actual user key
-
+    // Function to update user data based on session
+    const updateUserData = () => {
+        const storedUser = SessionAccountService.get(); // Retrieve the user object from session storage
         if (storedUser) {
             setIsLoggedIn(true);
-            setUser(JSON.parse(storedUser)); // Assuming you store user details in localStorage
+            setUser(storedUser); // Store the entire user object
+        } else {
+            setIsLoggedIn(false);
+            setUser(null); // Clear user data if no session data
         }
-    }, []);
+    };
+
+    useEffect(() => {
+        // Call the update function on component mount
+        updateUserData();
+
+        // Set up an event listener to handle changes in sessionStorage across tabs
+        const storageListener = () => {
+            updateUserData(); // Update the user state when session storage changes
+        };
+
+        // Add event listener for changes in sessionStorage
+        window.addEventListener('storage', storageListener);
+
+        // Also update user data whenever session is updated (via `SessionAccountService.update()`)
+        const interval = setInterval(() => {
+            SessionAccountService.update().then(updateUserData); // Re-check session every few seconds
+        }, 5000); // You can adjust the interval timing as needed
+
+        // Cleanup listeners when the component unmounts
+        return () => {
+            window.removeEventListener('storage', storageListener);
+            clearInterval(interval); // Clear interval when the component is unmounted
+        };
+
+    }, []); // Empty array ensures the effect runs only once on mount
 
     const onClick: MenuProps['onClick'] = (e) => {
         if (e.key === 'home') {
@@ -37,8 +65,11 @@ const Navbar: React.FC = () => {
         }
 
         if (e.key === 'logout') {
-            // Call logout from AuthService
-            AuthService.logout().then()
+            // Call logout from AuthService and clear the session
+            AuthService.logout().then(() => {
+                setIsLoggedIn(false); // Update state to reflect the user is logged out
+                setUser(null); // Clear user data
+            });
         }
 
         if (e.key === 'settings') {
@@ -48,10 +79,7 @@ const Navbar: React.FC = () => {
 
     return (
         <>
-            <Menu
-                onClick={onClick}
-                mode="horizontal"
-            >
+            <Menu onClick={onClick} mode="horizontal">
                 <Menu.Item key="home">Home</Menu.Item>
                 <Menu.Item key="projects">Projects</Menu.Item>
 
@@ -60,7 +88,6 @@ const Navbar: React.FC = () => {
                         key="auth"
                         icon={<LoginOutlined/>}
                         style={{marginLeft: 'auto', background: "#1677ff", color: "white"}}
-                        onClick={onClick}
                     >
                         Sign in
                     </Menu.Item>
