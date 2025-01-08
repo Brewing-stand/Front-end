@@ -1,13 +1,22 @@
 import axiosInstance from "./AxiosInstance.ts";
+import SessionAccountService from "./SessionAccountService.ts";
 
 const url = `${import.meta.env.VITE_API_URL}/auth`; // Replace with your API endpoint for logout
 
 const AuthService = {
-    async logout() {
-        // send logout request to api
-        await axiosInstance.post(`${url}/logout`).then(() => {
-            localStorage.removeItem('user');
-        })
+    /**
+     * Logs out the user by sending a logout request to the API and clearing session data.
+     */
+    async logout(): Promise<void> {
+        try {
+            // Send logout request to the API
+            await axiosInstance.post(`${url}/logout`);
+
+            // Clear the session data using SessionAccountService
+            SessionAccountService.clear();
+        } catch (error) {
+            console.error("Error during logout:", error);
+        }
     },
 };
 

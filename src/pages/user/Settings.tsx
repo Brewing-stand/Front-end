@@ -2,8 +2,9 @@ import {useState, useEffect} from 'react';
 import {Card, Button, Space, Typography, notification, Spin} from 'antd';
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
-import UserService from "../../services/UserService";
-import {User} from "../../models/User.ts";
+import UserService from "../../services/UserService"; // Assuming user service fetches data
+import {User} from "../../models/User.ts"; // Type for user model
+import UserModal from "../../components/user/UserModal.tsx"; // Modal component for user editing
 
 const {Title, Text} = Typography;
 
@@ -11,13 +12,14 @@ export function Settings() {
     const navigate = useNavigate();
     const [userData, setUserData] = useState<User | null>(null); // Typed user data
     const [, setLoading] = useState<boolean>(false);
-    const [userLoading, setUserLoading] = useState<boolean>(true); // To track loading state of user data
+    const [userLoading, setUserLoading] = useState<boolean>(true); // Track loading state of user data
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const response = await UserService.get(); // Get the user data from the service
-                setUserData(response.data); // Set the user data
+                setUserData(response.data); // Set the user data from response
             } catch {
                 notification.error({
                     message: 'Error Fetching User Data',
@@ -28,13 +30,13 @@ export function Settings() {
             }
         };
 
-        fetchUserData();
-    }, []);
+        fetchUserData(); // Fetch user data when the component is mounted
+    }, []); // Empty dependency array means this effect runs once on mount
 
     const handleDelete = async () => {
-        setLoading(true);
+        setLoading(true); // Set loading before deleting
         try {
-            const response = await UserService.delete();  // Use the service to delete the account
+            const response = await UserService.delete();  // Delete the account using service
             if (response.status === 200) {
                 notification.success({
                     message: 'Account Deleted',
@@ -48,13 +50,34 @@ export function Settings() {
                 description: 'There was an error deleting your account.',
             });
         } finally {
-            setLoading(false);
+            setLoading(false); // Finish loading after deletion
+        }
+    };
+
+    const handleUpdate = async (updatedUser: User) => {
+        setLoading(true); // Set loading before updating
+        try {
+            const response = await UserService.update(updatedUser); // Update the user data
+            if (response.status === 200) {
+                setUserData(updatedUser); // Update the local state with the updated user data
+                notification.success({
+                    message: 'User Updated',
+                    description: 'Your user data has been successfully updated.',
+                });
+                setIsModalVisible(false); // Close the modal after update
+            }
+        } catch {
+            notification.error({
+                message: 'Error Updating User',
+                description: 'There was an error updating your user data.',
+            });
+        } finally {
+            setLoading(false); // Finish loading after update
         }
     };
 
     const handleEdit = () => {
-        // Navigate to edit page or open an edit modal
-        navigate('/edit-profile');
+        setIsModalVisible(true); // Show the modal to edit user data
     };
 
     return (
@@ -65,35 +88,47 @@ export function Settings() {
                 </div>
             ) : (
                 userData && (
-                    <Card
-                        title={<Title level={4}>{userData.username}</Title>}
-                        bordered
-                        style={{width: 300, margin: '1rem'}}
-                        actions={[
-                            <Button
-                                type="text"
-                                icon={<EditOutlined/>}
-                                onClick={handleEdit}
-                                key="edit"
-                            >
-                                Edit
-                            </Button>,
-                            <Button
-                                type="text"
-                                icon={<DeleteOutlined/>}
-                                onClick={handleDelete}
-                                danger
-                                key="delete"
-                            >
-                                Delete
-                            </Button>,
-                        ]}
-                    >
-                        <Space direction="vertical" size="small">
-                            <Text><strong>Username:</strong> {userData.username}</Text>
-                            <Text><strong>Avatar:</strong> {userData.avatar || 'No avatar set'}</Text>
-                        </Space>
-                    </Card>
+                    <>
+                        <Card
+                            title={<Title level={4}>{userData.username}</Title>}
+                            bordered
+                            style={{width: 300, margin: '1rem'}}
+                            actions={[
+                                <Button
+                                    type="text"
+                                    icon={<EditOutlined/>}
+                                    onClick={handleEdit}
+                                    key="edit"
+                                >
+                                    Edit
+                                </Button>,
+                                <Button
+                                    type="text"
+                                    icon={<DeleteOutlined/>}
+                                    onClick={handleDelete}
+                                    danger
+                                    key="delete"
+                                >
+                                    Delete
+                                </Button>,
+                            ]}
+                        >
+                            <Space direction="vertical" size="small">
+                                <Text>
+                                    <strong>Username:</strong> {userData.username}
+                                </Text>
+                                <Text>
+                                    <strong>Avatar:</strong> {userData.avatar || 'No avatar set'}
+                                </Text>
+                            </Space>
+                        </Card>
+                        <UserModal
+                            visible={isModalVisible}
+                            onCancel={() => setIsModalVisible(false)}
+                            onUpdate={handleUpdate}
+                            userToEdit={userData}
+                        />
+                    </>
                 )
             )}
         </div>
