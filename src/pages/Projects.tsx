@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Spin} from 'antd';
+import {Button, Spin, notification} from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
 import ProjectService from "../services/ProjectService.ts";
 import {Project} from "../models/Project.ts";
@@ -12,7 +12,14 @@ const Projects: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [projectToEdit, setProjectToEdit] = useState<Project | undefined>(undefined);
 
+    // Fetch projects on component mount
     useEffect(() => {
+        fetchProjects();
+    }, []);
+
+    // Fetch projects from the backend
+    const fetchProjects = () => {
+        setLoading(true);
         ProjectService.getAll()
             .then(response => {
                 setProjects(response.data);
@@ -20,53 +27,84 @@ const Projects: React.FC = () => {
             })
             .catch(() => {
                 setLoading(false);
+                notification.error({
+                    message: 'Error',
+                    description: 'Failed to fetch projects. Please try again later.',
+                });
             });
-    }, []);
+    };
 
+    // Handle adding a new project
     const handleAddProject = () => {
         setProjectToEdit(undefined);
         setIsModalVisible(true);
     };
 
+    // Handle editing an existing project
     const handleEditProject = (projectId: string) => {
         const project = projects.find(p => p.id === projectId);
         setProjectToEdit(project);
         setIsModalVisible(true);
     };
 
+    // Handle deleting a project
     const handleDelete = (projectId: string) => {
         ProjectService.delete(projectId)
             .then(() => {
                 setProjects(projects.filter(project => project.id !== projectId));
+                notification.success({
+                    message: 'Success',
+                    description: 'Project deleted successfully.',
+                });
             })
             .catch(() => {
-                // Optional: Show some alert or notification
+                notification.error({
+                    message: 'Error',
+                    description: 'Failed to delete project. Please try again later.',
+                });
             });
     };
 
+    // Handle closing the modal
     const handleModalClose = () => {
         setIsModalVisible(false);
     };
 
+    // Handle adding a new project (from modal)
     const handleAddNewProject = (newProject: Project) => {
         ProjectService.create(newProject)
             .then(response => {
-                setProjects([...projects, response.data]);
+                setProjects(prevProjects => [...prevProjects, response.data]);
                 setIsModalVisible(false);
+                notification.success({
+                    message: 'Success',
+                    description: 'Project added successfully.',
+                });
             })
             .catch(() => {
-                // Optional: Show some alert or notification
+                notification.error({
+                    message: 'Error',
+                    description: 'Failed to add project. Please try again later.',
+                });
             });
     };
 
+    // Handle updating an existing project (from modal)
     const handleUpdateProject = (updatedProject: Project) => {
         ProjectService.update(updatedProject.id!, updatedProject)
             .then(() => {
                 setProjects(projects.map(p => (p.id === updatedProject.id ? updatedProject : p)));
                 setIsModalVisible(false);
+                notification.success({
+                    message: 'Success',
+                    description: 'Project updated successfully.',
+                });
             })
             .catch(() => {
-                // Optional: Show some alert or notification
+                notification.error({
+                    message: 'Error',
+                    description: 'Failed to update project. Please try again later.',
+                });
             });
     };
 
