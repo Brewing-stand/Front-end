@@ -14,6 +14,7 @@ export function Settings() {
     const [, setLoading] = useState<boolean>(false);
     const [userLoading, setUserLoading] = useState<boolean>(true); // Track loading state of user data
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    const [hasConsented, setHasConsented] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -31,6 +32,12 @@ export function Settings() {
         };
 
         fetchUserData(); // Fetch user data when the component is mounted
+
+        // Check for consent status on page load
+        const consentCookie = document.cookie.indexOf("userHasConsented=true");
+        if (consentCookie !== -1) {
+            setHasConsented(true);
+        }
     }, []); // Empty dependency array means this effect runs once on mount
 
     const handleDelete = async () => {
@@ -78,6 +85,16 @@ export function Settings() {
 
     const handleEdit = () => {
         setIsModalVisible(true); // Show the modal to edit user data
+    };
+
+    const handleRemoveConsent = () => {
+        // Remove the consent cookie and update the state
+        document.cookie = "userHasConsented=; path=/; max-age=0";  // Expire the consent cookie
+        setHasConsented(false);  // Update the state to reflect consent removal
+        notification.success({
+            message: 'Consent Removed',
+            description: 'You have successfully removed your consent.',
+        });
     };
 
     return (
@@ -128,6 +145,16 @@ export function Settings() {
                             onUpdate={handleUpdate}
                             userToEdit={userData}
                         />
+                        {/* Button to remove consent */}
+                        {hasConsented && (
+                            <Button
+                                danger
+                                onClick={handleRemoveConsent}
+                                style={{marginTop: '1rem'}}
+                            >
+                                Remove Consent
+                            </Button>
+                        )}
                     </>
                 )
             )}
