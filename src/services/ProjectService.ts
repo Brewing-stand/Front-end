@@ -2,9 +2,7 @@ import {Project} from "../models/Project.ts";
 import axiosInstance from "./AxiosInstance.ts";
 import {AxiosResponse} from "axios";
 
-let url = `${import.meta.env.VITE_API_URL}/project`; // Replace with your API endpoint for projects
-
-url = "http://localhost:5281/api/project"
+let url = `${import.meta.env.VITE_API_URL}/project`;
 
 const ProjectService = {
     async getAll(): Promise<AxiosResponse<[]>> {
