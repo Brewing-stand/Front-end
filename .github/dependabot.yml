@@ -1,0 +1,9 @@
+version: 2
+updates:
+  # For npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/" # Location of the package.json file (root for most apps)
+    schedule:
+      interval: "weekly" # Check for updates weekly
+    commit-message:
+      prefix: "deps"
