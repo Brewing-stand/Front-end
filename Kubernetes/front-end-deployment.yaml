@@ -16,7 +16,7 @@ spec:
         - name: front-end
           image: ghcr.io/brewing-stand/front-end:master
           ports:
-            - containerPort: 8080
+            - containerPort: 80
           resources:
             requests:
               memory: "512Mi"
