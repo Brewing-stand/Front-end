@@ -1,7 +1,7 @@
 import axiosInstance from "./AxiosInstance.ts";
 import SessionAccountService from "./SessionAccountService.ts";
 
-const url = `${import.meta.env.VITE_API_URL}/auth`; // Replace with your API endpoint for logout
+const url = `${import.meta.env.VITE_API_URL}/api/auth`; // Replace with your API endpoint for logout
 
 const AuthService = {
     /**
