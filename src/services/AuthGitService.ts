@@ -1,7 +1,7 @@
 import axios from "axios";
 import SessionAccountService from "./SessionAccountService.ts"; // Import the session service
 
-const url = `${import.meta.env.VITE_API_URL}/auth`; // Your API login endpoint
+const url = `${import.meta.env.VITE_API_URL}/api/auth`; // Your API login endpoint
 const CLIENT_ID = import.meta.env.VITE_GIT_CLIENT_ID;
 
 const AuthGitService = {

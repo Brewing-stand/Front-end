@@ -2,7 +2,7 @@ import {Project} from "../models/Project.ts";
 import axiosInstance from "./AxiosInstance.ts";
 import {AxiosResponse} from "axios";
 
-let url = `${import.meta.env.VITE_API_URL}/project`;
+const url = `${import.meta.env.VITE_API_URL}/api/project`;
 
 const ProjectService = {
     async getAll(): Promise<AxiosResponse<[]>> {

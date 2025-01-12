@@ -4,7 +4,7 @@ import {User} from "../models/User.ts";
 import AuthService from "./AuthService.ts";
 import SessionAccountService from "./SessionAccountService.ts";
 
-let url = `${import.meta.env.VITE_API_URL}/user`;
+const url = `${import.meta.env.VITE_API_URL}/api/user`;
 
 const UserService = {
     async get(): Promise<AxiosResponse> {
