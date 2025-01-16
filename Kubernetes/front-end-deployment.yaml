@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: front-end
-          image: ghcr.io/brewing-stand/front-end:master
+          image: PLACEHOLDER_IMAGE_URL
           imagePullPolicy: Always
           ports:
             - containerPort: 80
